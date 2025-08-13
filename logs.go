@@ -17,6 +17,26 @@ func (c *Client) GetEventLogsByAddress(chainId uint64, req GetEventLogsByAddress
 	return
 }
 
+// GetEventLogsByTopics Returns the events log in a block range, filtered by topics.
+func (c *Client) GetEventLogsByTopics(chainId uint64, req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
+	params := map[string]string{
+		"apiKey":  c.apiKey,
+		"chainid": strconv.FormatUint(chainId, 10),
+		"module":  "logs",
+		"action":  "getLogs",
+	}
+	for k, v := range ToMap(req) {
+		if k != "topics" {
+			params[k] = v
+		}
+	}
+	for k, v := range req.Topics {
+		params[k] = v
+	}
+	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	return
+}
+
 // GetEventLogsByAddressFilterByTopics Returns the event logs from an address, filtered by topics and block range.
 func (c *Client) GetEventLogsByAddressFilterByTopics(chainId uint64, req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
 	params := map[string]string{

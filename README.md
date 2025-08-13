@@ -1,6 +1,6 @@
 # etherscan-go
 
-Golang client for Etherscan API
+Golang client for Etherscan API(V2)
 
 # Etherscan api doc
 

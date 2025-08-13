@@ -17,7 +17,23 @@ func TestClient_GetEventLogsByAddress(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, rsp.Status, 1)
 	assert.Equal(t, rsp.Message, "OK")
-	assert.Equal(t, len(rsp.Result), 8)
+	assert.Equal(t, 10, len(rsp.Result))
+}
+
+func TestClient_GetEventLogsByTopics(t *testing.T) {
+	rsp, err := api.GetEventLogsByTopics(chainIdARB, GetEventLogsByTopicsReq{
+		FromBlock: 356426141,
+		ToBlock:   356427141,
+		Page:      1,
+		Offset:    0,
+		Topics: map[string]string{
+			"topic0": "0x2a3de20682fb291f444b5c1469d7e0950c558ce3dadf97163687873e29bcf4ae",
+		},
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, rsp.Status, 1)
+	assert.Equal(t, rsp.Message, "OK")
+	assert.Equal(t, 2, len(rsp.Result))
 }
 
 func TestClient_GetEventLogsByAddressFilterByTopics(t *testing.T) {
@@ -34,5 +50,5 @@ func TestClient_GetEventLogsByAddressFilterByTopics(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, rsp.Status, 1)
 	assert.Equal(t, rsp.Message, "OK")
-	assert.Equal(t, len(rsp.Result), 1)
+	assert.Equal(t, 2, len(rsp.Result))
 }

@@ -12,7 +12,7 @@ func init() {
 	apiKey := os.Getenv("EtherscanAPIKey")
 	api = New(apiKey, Options{
 		Timeout:       time.Second * 10,
-		Verbose:       true,
+		Verbose:       false,
 		BeforeRequest: FreeRateLimiter(),
 	})
 }
