@@ -19,7 +19,7 @@ type Options struct {
 	BaseUrl       string
 	Verbose       bool
 	Transport     *http.Transport
-	BeforeRequest func(client *resty.Client, req *resty.Request) error // for rate limit
+	BeforeRequest []resty.RequestMiddleware // for rate limit
 }
 
 func New(apiKey string, opts ...Options) *Client {
@@ -27,6 +27,10 @@ func New(apiKey string, opts ...Options) *Client {
 	restyCli.SetTimeout(time.Second * 10)
 	restyCli.SetBaseURL("https://api.etherscan.io/v2/api")
 	restyCli.SetHeader("User-Agent", "etherscan-go-client")
+	restyCli.AddRequestMiddleware(func(client *resty.Client, request *resty.Request) error {
+		request.SetQueryParam("apiKey", apiKey)
+		return nil
+	})
 	if len(opts) > 0 {
 		opt := opts[0]
 		restyCli.SetTimeout(opt.Timeout)
@@ -37,10 +41,22 @@ func New(apiKey string, opts ...Options) *Client {
 		if opt.Transport != nil {
 			restyCli.SetTransport(opt.Transport)
 		}
-		if opt.BeforeRequest != nil {
-			restyCli.AddRequestMiddleware(opt.BeforeRequest)
+		for _, f := range opt.BeforeRequest {
+			restyCli.AddRequestMiddleware(f)
 		}
 	}
+
+	return &Client{
+		resty:  restyCli,
+		apiKey: apiKey,
+	}
+}
+
+func NewWithClient(apiKey string, restyCli *resty.Client) *Client {
+	restyCli.AddRequestMiddleware(func(client *resty.Client, request *resty.Request) error {
+		request.SetQueryParam("apiKey", apiKey)
+		return nil
+	})
 
 	return &Client{
 		resty:  restyCli,

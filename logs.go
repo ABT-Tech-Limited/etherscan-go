@@ -1,16 +1,14 @@
 package etherscan
 
-import "strconv"
+var logModuleParams = map[string]string{
+	"module": "logs",
+	"action": "getLogs",
+}
 
 // GetEventLogsByAddress Returns the event logs from an address, with optional filtering by block range.
-func (c *Client) GetEventLogsByAddress(chainId uint64, req GetEventLogsByAddressReq) (resp *LogResp, err error) {
-	params := map[string]string{
-		"apiKey":  c.apiKey,
-		"chainid": strconv.FormatUint(chainId, 10),
-		"module":  "logs",
-		"action":  "getLogs",
-	}
-	for k, v := range ToMap(req) {
+func (c *Client) GetEventLogsByAddress(req GetEventLogsByAddressReq) (resp *LogResp, err error) {
+	params := logModuleParams
+	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
 	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
@@ -18,14 +16,9 @@ func (c *Client) GetEventLogsByAddress(chainId uint64, req GetEventLogsByAddress
 }
 
 // GetEventLogsByTopics Returns the events log in a block range, filtered by topics.
-func (c *Client) GetEventLogsByTopics(chainId uint64, req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
-	params := map[string]string{
-		"apiKey":  c.apiKey,
-		"chainid": strconv.FormatUint(chainId, 10),
-		"module":  "logs",
-		"action":  "getLogs",
-	}
-	for k, v := range ToMap(req) {
+func (c *Client) GetEventLogsByTopics(req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
+	params := logModuleParams
+	for k, v := range StructToMap(req) {
 		if k != "topics" {
 			params[k] = v
 		}
@@ -38,14 +31,9 @@ func (c *Client) GetEventLogsByTopics(chainId uint64, req GetEventLogsByTopicsRe
 }
 
 // GetEventLogsByAddressFilterByTopics Returns the event logs from an address, filtered by topics and block range.
-func (c *Client) GetEventLogsByAddressFilterByTopics(chainId uint64, req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
-	params := map[string]string{
-		"apiKey":  c.apiKey,
-		"chainid": strconv.FormatUint(chainId, 10),
-		"module":  "logs",
-		"action":  "getLogs",
-	}
-	for k, v := range ToMap(req) {
+func (c *Client) GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
+	params := logModuleParams
+	for k, v := range StructToMap(req) {
 		if k != "topics" {
 			params[k] = v
 		}

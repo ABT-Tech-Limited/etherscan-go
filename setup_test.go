@@ -3,6 +3,8 @@ package etherscan
 import (
 	"os"
 	"time"
+
+	"resty.dev/v3"
 )
 
 var api *Client
@@ -13,6 +15,6 @@ func init() {
 	api = New(apiKey, Options{
 		Timeout:       time.Second * 10,
 		Verbose:       false,
-		BeforeRequest: FreeRateLimiter(),
+		BeforeRequest: []resty.RequestMiddleware{FreeRateLimiter()},
 	})
 }
