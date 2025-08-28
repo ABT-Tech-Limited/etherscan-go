@@ -64,6 +64,11 @@ func NewWithClient(apiKey string, restyCli *resty.Client) *Client {
 	}
 }
 
+func (c *Client) Debug() *Client {
+	c.resty.SetDebug(true)
+	return c
+}
+
 func FreeRateLimiter() func(client *resty.Client, req *resty.Request) error {
 	limiter := rate.NewLimiter(5, 1)
 	return func(client *resty.Client, req *resty.Request) error {
