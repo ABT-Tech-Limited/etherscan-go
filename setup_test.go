@@ -9,6 +9,7 @@ import (
 
 var api *Client
 var chainIdARB = uint64(42161)
+var chainIDETH = uint64(1)
 
 func init() {
 	apiKey := os.Getenv("EtherscanAPIKey")

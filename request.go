@@ -1,5 +1,22 @@
 package etherscan
 
+// Module: Contract
+
+type GetContractABIReq struct {
+	ChainID uint64 `json:"chainid"`
+	Address string `json:"address"` // the string representing the address of the contract
+}
+
+type GetContractSourceCodeReq struct {
+	ChainID uint64 `json:"chainid"`
+	Address string `json:"address"` // the string representing the address of the contract
+}
+
+type GetContractCreatorTxInfoReq struct {
+	ChainID   uint64   `json:"chainid"`
+	Addresses []string `json:"contractaddresses"` // the array representing the addresses of the contract
+}
+
 // Module: Log
 
 type GetEventLogsByAddressReq struct {
