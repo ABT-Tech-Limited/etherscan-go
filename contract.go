@@ -9,7 +9,7 @@ var contractModuleParams = map[string]string{
 }
 
 // GetContractABI Returns the Contract Application Binary Interface ( ABI ) of a verified smart contract.
-func (c *Client) GetContractABI(req GetContractABIReq) (resp *ContractABIResp, err error) {
+func (c *client) GetContractABI(req GetContractABIReq) (resp *ContractABIResp, err error) {
 	params := contractModuleParams
 	params["action"] = "getabi"
 	for k, v := range StructToMap(req) {
@@ -20,7 +20,7 @@ func (c *Client) GetContractABI(req GetContractABIReq) (resp *ContractABIResp, e
 }
 
 // GetContractSourceCode Returns the Solidity source code of a verified smart contract.
-func (c *Client) GetContractSourceCode(req GetContractSourceCodeReq) (resp *ContractSourcecodeResp, err error) {
+func (c *client) GetContractSourceCode(req GetContractSourceCodeReq) (resp *ContractSourcecodeResp, err error) {
 	params := contractModuleParams
 	params["action"] = "getsourcecode"
 	for k, v := range StructToMap(req) {
@@ -32,7 +32,7 @@ func (c *Client) GetContractSourceCode(req GetContractSourceCodeReq) (resp *Cont
 }
 
 // GetContractCreatorTxInfo Returns a contract's deployer address and transaction hash it was created, up to 5 at a time.
-func (c *Client) GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (resp *ContractCreatorTxInfoResp, err error) {
+func (c *client) GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (resp *ContractCreatorTxInfoResp, err error) {
 	params := contractModuleParams
 	params["action"] = "getcontractcreation"
 	for k, v := range StructToMap(req) {

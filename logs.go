@@ -6,7 +6,7 @@ var logModuleParams = map[string]string{
 }
 
 // GetEventLogsByAddress Returns the event logs from an address, with optional filtering by block range.
-func (c *Client) GetEventLogsByAddress(req GetEventLogsByAddressReq) (resp *LogResp, err error) {
+func (c *client) GetEventLogsByAddress(req GetEventLogsByAddressReq) (resp *LogResp, err error) {
 	params := logModuleParams
 	for k, v := range StructToMap(req) {
 		params[k] = v
@@ -16,7 +16,7 @@ func (c *Client) GetEventLogsByAddress(req GetEventLogsByAddressReq) (resp *LogR
 }
 
 // GetEventLogsByTopics Returns the events log in a block range, filtered by topics.
-func (c *Client) GetEventLogsByTopics(req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
+func (c *client) GetEventLogsByTopics(req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
 	params := logModuleParams
 	for k, v := range StructToMap(req) {
 		if k != "topics" {
@@ -31,7 +31,7 @@ func (c *Client) GetEventLogsByTopics(req GetEventLogsByTopicsReq) (resp *LogRes
 }
 
 // GetEventLogsByAddressFilterByTopics Returns the event logs from an address, filtered by topics and block range.
-func (c *Client) GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
+func (c *client) GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
 	params := logModuleParams
 	for k, v := range StructToMap(req) {
 		if k != "topics" {

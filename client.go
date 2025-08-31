@@ -9,7 +9,21 @@ import (
 	"resty.dev/v3"
 )
 
-type Client struct {
+// Client is the interface for interacting with Etherscan API
+type Client interface {
+	GetContractABI(req GetContractABIReq) (*ContractABIResp, error)
+	GetContractSourceCode(req GetContractSourceCodeReq) (*ContractSourcecodeResp, error)
+	GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (*ContractCreatorTxInfoResp, error)
+
+	GetEventLogsByAddress(req GetEventLogsByAddressReq) (*LogResp, error)
+	GetEventLogsByTopics(req GetEventLogsByTopicsReq) (*LogResp, error)
+	GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFilterByTopicsReq) (*LogResp, error)
+
+	Debug() Client
+}
+
+// client is the concrete implementation of the Client interface
+type client struct {
 	resty  *resty.Client
 	apiKey string
 }
@@ -22,7 +36,7 @@ type Options struct {
 	BeforeRequest []resty.RequestMiddleware // for rate limit
 }
 
-func New(apiKey string, opts ...Options) *Client {
+func New(apiKey string, opts ...Options) Client {
 	restyCli := resty.New()
 	restyCli.SetTimeout(time.Second * 10)
 	restyCli.SetBaseURL("https://api.etherscan.io/v2/api")
@@ -46,25 +60,25 @@ func New(apiKey string, opts ...Options) *Client {
 		}
 	}
 
-	return &Client{
+	return &client{
 		resty:  restyCli,
 		apiKey: apiKey,
 	}
 }
 
-func NewWithClient(apiKey string, restyCli *resty.Client) *Client {
+func NewWithClient(apiKey string, restyCli *resty.Client) Client {
 	restyCli.AddRequestMiddleware(func(client *resty.Client, request *resty.Request) error {
 		request.SetQueryParam("apiKey", apiKey)
 		return nil
 	})
 
-	return &Client{
+	return &client{
 		resty:  restyCli,
 		apiKey: apiKey,
 	}
 }
 
-func (c *Client) Debug() *Client {
+func (c *client) Debug() Client {
 	c.resty.SetDebug(true)
 	return c
 }

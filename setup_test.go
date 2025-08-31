@@ -7,7 +7,7 @@ import (
 	"resty.dev/v3"
 )
 
-var api *Client
+var api Client
 var chainIdARB = uint64(42161)
 var chainIDETH = uint64(1)
 
