@@ -16,7 +16,14 @@ import (
 //   "status": "0",
 //   "message": "No records found",
 //   "result": []
-//}
+// }
+//
+// {
+//   "status": "1",}
+//   "message": "OK",
+//   "result": [ ... ]
+// }
+//
 //
 
 type BaseResp struct {
@@ -33,30 +40,17 @@ type StringResp struct {
 
 // Module: Contract
 
-type ContractABIResp BaseResp
-
-func (r *ContractABIResp) GetData() (string, error) {
-	var msg string
-	if r.Status == 0 {
-		// 尝试解析为字符串（错误信息）
-		if err := json.Unmarshal(r.Result, &msg); err == nil {
-			return "", fmt.Errorf("API call error: %s", msg)
-		}
-		return "", fmt.Errorf("API call error with unknown message: %v", r.Result)
-	}
-	// 尝试解析为ABI字符串
-	if err := json.Unmarshal(r.Result, &msg); err != nil {
-		return "", fmt.Errorf("failed to parse result: %v", err)
-	}
-	return msg, nil
-}
-
 type ContractSourcecodeResp BaseResp
 
 func (r *ContractSourcecodeResp) GetData() ([]ContractSourceCode, error) {
 	if r.Status == 0 {
 		return nil, fmt.Errorf("API call error: %s", r.Result)
 	}
+	var resultStr string
+	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
+		return nil, fmt.Errorf("API call error: %s", resultStr)
+	}
+
 	var codes []ContractSourceCode
 	err := json.Unmarshal(r.Result, &codes)
 	if err != nil {
@@ -100,6 +94,11 @@ func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
 	if r.Status == 0 {
 		return nil, fmt.Errorf("API call error: %s", r.Result)
 	}
+	var resultStr string
+	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
+		return nil, fmt.Errorf("API call error: %s", resultStr)
+	}
+
 	var infos []ContractCreatorTxInfo
 	err := json.Unmarshal(r.Result, &infos)
 	if err != nil {
@@ -109,6 +108,20 @@ func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
 }
 
 type VerifySourceCodeResp BaseResp
+
+func (r *VerifySourceCodeResp) GetData() (string, error) {
+	if r.Status == 0 {
+		return "", fmt.Errorf("API call error: %s", r.Result)
+	}
+	var resultStr string
+	if err := json.Unmarshal(r.Result, &resultStr); err != nil {
+		return "", fmt.Errorf("failed to parse result: %v", err)
+	}
+	if resultStr == "Contract source code already verified" {
+		return "", nil
+	}
+	return resultStr, nil
+}
 
 // Module: Log
 
@@ -130,19 +143,14 @@ type Log struct {
 
 // GetData 获取日志数据，如果result是错误信息则返回错误
 func (r *LogResp) GetData() ([]Log, error) {
-	// 如果状态不是成功且不是"没有记录"的情况，检查result是否是错误字符串
-	if r.Status == 0 && r.Message != "No records found" {
-		// 尝试解析为字符串（错误信息）
-		var errorMsg string
-		if err := json.Unmarshal(r.Result, &errorMsg); err == nil {
-			return nil, fmt.Errorf("API call error: %s", errorMsg)
-		}
+	if r.Status == 0 {
+		return nil, fmt.Errorf("API call error: %s", r.Result)
 	}
-	// 如果是"No records found"，直接返回空数组
-	if r.Status == 0 && r.Message == "No records found" {
-		return []Log{}, nil
+	var resultStr string
+	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
+		return nil, fmt.Errorf("API call error: %s", resultStr)
 	}
-	// 尝试解析为日志数组
+
 	var logs []Log
 	if err := json.Unmarshal(r.Result, &logs); err != nil {
 		return nil, fmt.Errorf("failed to parse result: %v", err)

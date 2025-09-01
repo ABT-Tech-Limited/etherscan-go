@@ -1,6 +1,7 @@
 package etherscan
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -9,7 +10,7 @@ var contractModuleParams = map[string]string{
 }
 
 // GetContractABI Returns the Contract Application Binary Interface ( ABI ) of a verified smart contract.
-func (c *client) GetContractABI(req GetContractABIReq) (resp *ContractABIResp, err error) {
+func (c *client) GetContractABI(req GetContractABIReq) (resp *StringResp, err error) {
 	params := CopyMap(contractModuleParams)
 	params["action"] = "getabi"
 	for k, v := range StructToMap(req) {
@@ -44,13 +45,11 @@ func (c *client) GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (resp
 }
 
 // VerifySourceCode Submits a contract source code to an Etherscan-like explorer for verification.
-func (c *client) VerifySourceCode(req VerifySourceCodeReq) (resp *StringResp, err error) {
+func (c *client) VerifySourceCode(req VerifySourceCodeReq) (resp *VerifySourceCodeResp, err error) {
 	params := CopyMap(contractModuleParams)
 	params["action"] = "verifysourcecode"
-	for k, v := range StructToMap(req) {
-		params[k] = v
-	}
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Post("")
+	params["chainid"] = strconv.FormatUint(req.ChainID, 10)
+	_, err = c.resty.R().SetQueryParams(params).SetFormData(StructToMap(req)).SetError(&resp).SetResult(&resp).Post("")
 	return
 }
 

@@ -13,9 +13,7 @@ func TestClient_GetContractABI(t *testing.T) {
 	})
 	assert.Nil(t, err)
 	assert.Equal(t, 1, rsp.Status)
-	abi, err := rsp.GetData()
-	assert.Nil(t, err)
-	assert.NotEmpty(t, abi)
+	assert.NotEmpty(t, rsp.Result)
 }
 
 func TestClient_GetContractSourceCode(t *testing.T) {
@@ -66,8 +64,8 @@ func TestClient_VerifySourceCode(t *testing.T) {
 func TestClient_CheckVerifyStatus(t *testing.T) {
 	rsp, err := api.CheckVerifyStatus(CheckVerifyStatusReq{
 		ChainID: chainIDETH,
-		GUID:    "",
+		GUID:    "x3ryqcqr1zdknhfhkimqmizlcqpxncqc6nrvp3pgrcpfsqedqi",
 	})
 	assert.Nil(t, err)
-	assert.NotNil(t, rsp)
+	assert.Equal(t, "Pass - Verified", rsp.Result)
 }

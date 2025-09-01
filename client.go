@@ -11,10 +11,10 @@ import (
 
 // Client is the interface for interacting with Etherscan API
 type Client interface {
-	GetContractABI(req GetContractABIReq) (*ContractABIResp, error)
+	GetContractABI(req GetContractABIReq) (*StringResp, error)
 	GetContractSourceCode(req GetContractSourceCodeReq) (*ContractSourcecodeResp, error)
 	GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (*ContractCreatorTxInfoResp, error)
-	VerifySourceCode(req VerifySourceCodeReq) (resp *StringResp, err error)
+	VerifySourceCode(req VerifySourceCodeReq) (resp *VerifySourceCodeResp, err error)
 	CheckVerifyStatus(req CheckVerifyStatusReq) (resp *StringResp, err error)
 
 	GetEventLogsByAddress(req GetEventLogsByAddressReq) (*LogResp, error)

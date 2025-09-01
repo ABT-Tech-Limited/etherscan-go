@@ -21,7 +21,4 @@ func TestNew(t *testing.T) {
 		Verbose: mockVerbose,
 	})
 	assert.NotNil(t, cliWithOpts)
-
-	// Since Client is now an interface, we can't directly access internal fields
-	// We would need to test through actual API calls or add test methods
 }
