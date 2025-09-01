@@ -14,6 +14,8 @@ type Client interface {
 	GetContractABI(req GetContractABIReq) (*ContractABIResp, error)
 	GetContractSourceCode(req GetContractSourceCodeReq) (*ContractSourcecodeResp, error)
 	GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (*ContractCreatorTxInfoResp, error)
+	VerifySourceCode(req VerifySourceCodeReq) (resp *StringResp, err error)
+	CheckVerifyStatus(req CheckVerifyStatusReq) (resp *StringResp, err error)
 
 	GetEventLogsByAddress(req GetEventLogsByAddressReq) (*LogResp, error)
 	GetEventLogsByTopics(req GetEventLogsByTopicsReq) (*LogResp, error)

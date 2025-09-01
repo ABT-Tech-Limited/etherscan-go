@@ -3,7 +3,7 @@ module github.com/ABT-Tech-Limited/etherscan-go
 go 1.24.4
 
 require (
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/time v0.12.0
 	resty.dev/v3 v3.0.0-beta.3
 )

@@ -25,6 +25,12 @@ type BaseResp struct {
 	Result  json.RawMessage `json:"result"`
 }
 
+type StringResp struct {
+	Status  int    `json:"status,string"`
+	Message string `json:"message"`
+	Result  string `json:"result"`
+}
+
 // Module: Contract
 
 type ContractABIResp BaseResp
@@ -101,6 +107,8 @@ func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
 	}
 	return infos, nil
 }
+
+type VerifySourceCodeResp BaseResp
 
 // Module: Log
 

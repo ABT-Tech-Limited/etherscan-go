@@ -46,3 +46,28 @@ func TestClient_GetContractCreatorTxInfo(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Len(t, info, 5)
 }
+
+func TestClient_VerifySourceCode(t *testing.T) {
+	rsp, err := api.VerifySourceCode(VerifySourceCodeReq{
+		ChainID:              chainIDETH,
+		CodeFormat:           "",
+		SourceCode:           "",
+		ContractAddress:      "",
+		ContractName:         "",
+		CompilerVersion:      "",
+		ConstructorArguments: nil,
+		CompilerMode:         nil,
+		ZkSolcVersion:        nil,
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, rsp)
+}
+
+func TestClient_CheckVerifyStatus(t *testing.T) {
+	rsp, err := api.CheckVerifyStatus(CheckVerifyStatusReq{
+		ChainID: chainIDETH,
+		GUID:    "",
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, rsp)
+}

@@ -41,6 +41,10 @@ func StructToMap(obj any) map[string]string {
 			val = value.Interface()
 		}
 
+		if val == nil {
+			continue
+		}
+
 		// 使用 json tag 作为 key，如果没有就用字段名
 		key := field.Tag.Get("json")
 		if key == "" || key == "-" {
@@ -105,4 +109,12 @@ func ToStringE(i any) (string, error) {
 		return s.Error(), nil
 	}
 	return "", errors.New("unsupported type for ToStringE: " + reflect.TypeOf(i).String())
+}
+
+func CopyMap(src map[string]string) map[string]string {
+	dst := make(map[string]string, len(src))
+	for k, v := range src {
+		dst[k] = v
+	}
+	return dst
 }
