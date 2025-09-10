@@ -43,6 +43,9 @@ type StringResp struct {
 type ContractSourcecodeResp BaseResp
 
 func (r *ContractSourcecodeResp) GetData() ([]ContractSourceCode, error) {
+	if r == nil {
+		return nil, fmt.Errorf("response is nil")
+	}
 	if r.Status == 0 {
 		return nil, fmt.Errorf("API call error: %s", r.Result)
 	}
@@ -91,6 +94,9 @@ type ContractCreatorTxInfo struct {
 }
 
 func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
+	if r == nil {
+		return nil, fmt.Errorf("response is nil")
+	}
 	if r.Status == 0 {
 		return nil, fmt.Errorf("API call error: %s", r.Result)
 	}
@@ -110,6 +116,9 @@ func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
 type VerifySourceCodeResp BaseResp
 
 func (r *VerifySourceCodeResp) GetData() (string, error) {
+	if r == nil {
+		return "", fmt.Errorf("response is nil")
+	}
 	if r.Status == 0 {
 		return "", fmt.Errorf("API call error: %s", r.Result)
 	}
@@ -143,6 +152,9 @@ type Log struct {
 
 // GetData 获取日志数据，如果result是错误信息则返回错误
 func (r *LogResp) GetData() ([]Log, error) {
+	if r == nil {
+		return nil, fmt.Errorf("response is nil")
+	}
 	if r.Status == 0 {
 		return nil, fmt.Errorf("API call error: %s", r.Result)
 	}
