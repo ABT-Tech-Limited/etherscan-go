@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+const (
+	NoRecordsFound              = "No records found"
+	ContractCodeAlreadyVerified = "Contract source code already verified"
+)
+
 //
 // {
 //   "status": "0",
@@ -19,7 +24,7 @@ import (
 // }
 //
 // {
-//   "status": "1",}
+//   "status": "1",
 //   "message": "OK",
 //   "result": [ ... ]
 // }
@@ -46,12 +51,15 @@ func (r *ContractSourcecodeResp) GetData() ([]ContractSourceCode, error) {
 	if r == nil {
 		return nil, fmt.Errorf("response is nil")
 	}
+	if r.Message == NoRecordsFound {
+		return nil, nil
+	}
 	if r.Status == 0 {
-		return nil, fmt.Errorf("API call error: %s", r.Result)
+		return nil, fmt.Errorf("status not ok: %s", r.Message)
 	}
 	var resultStr string
 	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return nil, fmt.Errorf("API call error: %s", resultStr)
+		return nil, fmt.Errorf("result error: %s", resultStr)
 	}
 
 	var codes []ContractSourceCode
@@ -97,12 +105,15 @@ func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
 	if r == nil {
 		return nil, fmt.Errorf("response is nil")
 	}
+	if r.Message == NoRecordsFound {
+		return nil, nil
+	}
 	if r.Status == 0 {
-		return nil, fmt.Errorf("API call error: %s", r.Result)
+		return nil, fmt.Errorf("status not ok: %s", r.Message)
 	}
 	var resultStr string
 	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return nil, fmt.Errorf("API call error: %s", resultStr)
+		return nil, fmt.Errorf("result error: %s", resultStr)
 	}
 
 	var infos []ContractCreatorTxInfo
@@ -119,14 +130,18 @@ func (r *VerifySourceCodeResp) GetData() (string, error) {
 	if r == nil {
 		return "", fmt.Errorf("response is nil")
 	}
+	if r.Message == NoRecordsFound {
+		return "", nil
+	}
 	if r.Status == 0 {
-		return "", fmt.Errorf("API call error: %s", r.Result)
+		return "", fmt.Errorf("status not ok: %s", r.Message)
 	}
 	var resultStr string
-	if err := json.Unmarshal(r.Result, &resultStr); err != nil {
-		return "", fmt.Errorf("failed to parse result: %v", err)
+	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
+		return "", fmt.Errorf("result error: %s", resultStr)
 	}
-	if resultStr == "Contract source code already verified" {
+
+	if resultStr == ContractCodeAlreadyVerified {
 		return "", nil
 	}
 	return resultStr, nil
@@ -155,12 +170,15 @@ func (r *LogResp) GetData() ([]Log, error) {
 	if r == nil {
 		return nil, fmt.Errorf("response is nil")
 	}
+	if r.Message == NoRecordsFound {
+		return nil, nil
+	}
 	if r.Status == 0 {
-		return nil, fmt.Errorf("API call error: %s", r.Result)
+		return nil, fmt.Errorf("status not ok: %s", r.Message)
 	}
 	var resultStr string
 	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return nil, fmt.Errorf("API call error: %s", resultStr)
+		return nil, fmt.Errorf("result error: %s", resultStr)
 	}
 
 	var logs []Log
