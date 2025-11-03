@@ -7,8 +7,13 @@ import (
 
 const (
 	NoRecordsFound              = "No records found"
+	NoDataFound                 = "No data found"
 	ContractCodeAlreadyVerified = "Contract source code already verified"
 )
+
+func IsNoDataFound(msg string) bool {
+	return msg == NoRecordsFound || msg == NoDataFound
+}
 
 //
 // {
@@ -51,7 +56,7 @@ func (r *ContractSourcecodeResp) GetData() ([]ContractSourceCode, error) {
 	if r == nil {
 		return nil, fmt.Errorf("response is nil")
 	}
-	if r.Message == NoRecordsFound {
+	if IsNoDataFound(r.Message) {
 		return nil, nil
 	}
 	if r.Status == 0 {
@@ -105,7 +110,7 @@ func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
 	if r == nil {
 		return nil, fmt.Errorf("response is nil")
 	}
-	if r.Message == NoRecordsFound {
+	if IsNoDataFound(r.Message) {
 		return nil, nil
 	}
 	if r.Status == 0 {
@@ -130,7 +135,7 @@ func (r *VerifySourceCodeResp) GetData() (string, error) {
 	if r == nil {
 		return "", fmt.Errorf("response is nil")
 	}
-	if r.Message == NoRecordsFound {
+	if IsNoDataFound(r.Message) {
 		return "", nil
 	}
 	if r.Status == 0 {
@@ -170,7 +175,7 @@ func (r *LogResp) GetData() ([]Log, error) {
 	if r == nil {
 		return nil, fmt.Errorf("response is nil")
 	}
-	if r.Message == NoRecordsFound {
+	if IsNoDataFound(r.Message) {
 		return nil, nil
 	}
 	if r.Status == 0 {
