@@ -1,38 +1,8 @@
 package etherscan
 
+// Module: Account
+
 // Module: Contract
-
-type GetContractABIReq struct {
-	ChainID uint64 `json:"chainid"`
-	Address string `json:"address"` // the string representing the address of the contract
-}
-
-type GetContractSourceCodeReq struct {
-	ChainID uint64 `json:"chainid"`
-	Address string `json:"address"` // the string representing the address of the contract
-}
-
-type GetContractCreatorTxInfoReq struct {
-	ChainID   uint64   `json:"chainid"`
-	Addresses []string `json:"contractaddresses"` // the array representing the addresses of the contract
-}
-
-type VerifySourceCodeReq struct {
-	ChainID              uint64  `json:"chainid"`
-	CodeFormat           string  `json:"codeformat"`            // single file, use solidity-single-file JSON file ( recommended ), use solidity-standard-json-input
-	SourceCode           string  `json:"sourceCode"`            // the Solidity source code
-	ContractAddress      string  `json:"contractaddress"`       // the address your contract is deployed at
-	ContractName         string  `json:"contractname"`          // the name of your contract, such as contracts/Verified.sol:Verified
-	CompilerVersion      string  `json:"compilerversion"`       // compiler version used, such as v0.8.24+commit.e11b9ed9
-	ConstructorArguments *string `json:"constructorArguements"` // optional, include if your contract uses constructor arguments
-	CompilerMode         *string `json:"compilermode"`          // for ZK Stack, set to solc/zksync
-	ZkSolcVersion        *string `json:"zksolcVersion"`         // for ZK Stack, zkSolc version used, such as v1.3.14
-}
-
-type CheckVerifyStatusReq struct {
-	ChainID uint64 `json:"chainid"`
-	GUID    string `json:"guid"` // the guid returned from the verify API
-}
 
 // Module: Log
 

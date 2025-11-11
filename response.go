@@ -5,17 +5,8 @@ import (
 	"fmt"
 )
 
-const (
-	NoRecordsFound              = "No records found"
-	NoDataFound                 = "No data found"
-	ContractCodeAlreadyVerified = "Contract source code already verified"
-)
-
-func IsNoDataFound(msg string) bool {
-	return msg == NoRecordsFound || msg == NoDataFound
-}
-
 //
+// Example responses:
 // {
 //   "status": "0",
 //   "message": "NOTOK",
@@ -36,6 +27,17 @@ func IsNoDataFound(msg string) bool {
 //
 //
 
+const (
+	NoRecordsFound              = "No records found"
+	NoDataFound                 = "No data found"
+	NoTransactionsFound         = "No transactions found"
+	ContractCodeAlreadyVerified = "Contract source code already verified"
+)
+
+func IsNoDataFound(msg string) bool {
+	return msg == NoRecordsFound || msg == NoDataFound || msg == NoTransactionsFound
+}
+
 type BaseResp struct {
 	Status  int             `json:"status,string"` // 1 for good, 0 for error
 	Message string          `json:"message"`       // OK for good, other words when Status equals 0
@@ -48,147 +50,34 @@ type StringResp struct {
 	Result  string `json:"result"`
 }
 
-// Module: Contract
-
-type ContractSourcecodeResp BaseResp
-
-func (r *ContractSourcecodeResp) GetData() ([]ContractSourceCode, error) {
+// Parse 解析基础响应，检查状态和消息
+func (r *BaseResp) Parse() (bool, error) {
 	if r == nil {
-		return nil, fmt.Errorf("response is nil")
+		return false, fmt.Errorf("response is nil")
 	}
-	if IsNoDataFound(r.Message) {
-		return nil, nil
+	if IsNoDataFound(r.Message) { // 没有找到数据
+		return true, nil
 	}
 	if r.Status == 0 {
-		return nil, fmt.Errorf("status not ok: %s", r.Message)
+		// NOT OK 解析Result
+		var resultStr string
+		if err := json.Unmarshal(r.Result, &resultStr); err == nil {
+			return false, fmt.Errorf("status not ok: %s", resultStr)
+		}
+		return false, fmt.Errorf("status not ok: %s", r.Message)
 	}
-	var resultStr string
-	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return nil, fmt.Errorf("result error: %s", resultStr)
-	}
-
-	var codes []ContractSourceCode
-	err := json.Unmarshal(r.Result, &codes)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse result: %v", err)
-	}
-	return codes, nil
+	return false, nil
 }
 
-type ContractSourceCode struct {
-	SourceCode           string `json:"SourceCode"`
-	ABI                  string `json:"ABI"`
-	ContractName         string `json:"ContractName"`
-	CompilerVersion      string `json:"CompilerVersion"`
-	CompilerType         string `json:"CompilerType"`
-	OptimizationUsed     string `json:"OptimizationUsed"`
-	Runs                 string `json:"Runs"`
-	ConstructorArguments string `json:"ConstructorArguments"`
-	EVMVersion           string `json:"EVMVersion"`
-	Library              string `json:"Library"`
-	ContractFileName     string `json:"ContractFileName"`
-	LicenseType          string `json:"LicenseType"`
-	Proxy                string `json:"Proxy"`
-	Implementation       string `json:"Implementation"`
-	SwarmSource          string `json:"SwarmSource"`
-	SimilarMatch         string `json:"SimilarMatch"`
-}
-
-type ContractCreatorTxInfoResp BaseResp
-
-type ContractCreatorTxInfo struct {
-	ContractAddress  string `json:"contractAddress"`
-	ContractCreator  string `json:"contractCreator"`
-	TxHash           string `json:"txHash"`
-	BlockNumber      string `json:"blockNumber"`
-	Timestamp        string `json:"timeStamp"`
-	ContractFactory  string `json:"contractFactory"`
-	CreationBytecode string `json:"creationBytecode"`
-}
-
-func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
-	if r == nil {
-		return nil, fmt.Errorf("response is nil")
-	}
-	if IsNoDataFound(r.Message) {
-		return nil, nil
-	}
-	if r.Status == 0 {
-		return nil, fmt.Errorf("status not ok: %s", r.Message)
-	}
-	var resultStr string
-	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return nil, fmt.Errorf("result error: %s", resultStr)
-	}
-
-	var infos []ContractCreatorTxInfo
-	err := json.Unmarshal(r.Result, &infos)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse result: %v", err)
-	}
-	return infos, nil
-}
-
-type VerifySourceCodeResp BaseResp
-
-func (r *VerifySourceCodeResp) GetData() (string, error) {
+func (r *StringResp) Parse() (string, error) {
 	if r == nil {
 		return "", fmt.Errorf("response is nil")
 	}
-	if IsNoDataFound(r.Message) {
+	if IsNoDataFound(r.Message) { // 没有找到数据
 		return "", nil
 	}
 	if r.Status == 0 {
 		return "", fmt.Errorf("status not ok: %s", r.Message)
 	}
-	var resultStr string
-	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return "", fmt.Errorf("result error: %s", resultStr)
-	}
-
-	if resultStr == ContractCodeAlreadyVerified {
-		return "", nil
-	}
-	return resultStr, nil
-}
-
-// Module: Log
-
-type LogResp BaseResp
-
-type Log struct {
-	Address          string   `json:"address"`
-	Topics           []string `json:"topics"`
-	Data             string   `json:"data"`
-	BlockNumber      string   `json:"blockNumber"`
-	BlockHash        string   `json:"blockHash"`
-	TimeStamp        string   `json:"timeStamp"`
-	GasPrice         string   `json:"gasPrice"`
-	GasUsed          string   `json:"gasUsed"`
-	LogIndex         string   `json:"logIndex"`
-	TransactionHash  string   `json:"transactionHash"`
-	TransactionIndex string   `json:"transactionIndex"`
-}
-
-// GetData 获取日志数据，如果result是错误信息则返回错误
-func (r *LogResp) GetData() ([]Log, error) {
-	if r == nil {
-		return nil, fmt.Errorf("response is nil")
-	}
-	if IsNoDataFound(r.Message) {
-		return nil, nil
-	}
-	if r.Status == 0 {
-		return nil, fmt.Errorf("status not ok: %s", r.Message)
-	}
-	var resultStr string
-	if err := json.Unmarshal(r.Result, &resultStr); err == nil {
-		return nil, fmt.Errorf("result error: %s", resultStr)
-	}
-
-	var logs []Log
-	if err := json.Unmarshal(r.Result, &logs); err != nil {
-		return nil, fmt.Errorf("failed to parse result: %v", err)
-	}
-	return logs, nil
+	return r.Result, nil
 }

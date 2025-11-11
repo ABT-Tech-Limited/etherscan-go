@@ -11,11 +11,19 @@ import (
 
 // Client is the interface for interacting with Etherscan API
 type Client interface {
+	// Account module
+
+	GetNormalTransactions(req GetNormalTransactionsReq) (*TransactionListResp, error)
+
+	// Contracts module
+
 	GetContractABI(req GetContractABIReq) (*StringResp, error)
 	GetContractSourceCode(req GetContractSourceCodeReq) (*ContractSourcecodeResp, error)
 	GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (*ContractCreatorTxInfoResp, error)
 	VerifySourceCode(req VerifySourceCodeReq) (resp *VerifySourceCodeResp, err error)
 	CheckVerifyStatus(req CheckVerifyStatusReq) (resp *StringResp, err error)
+
+	// Logs module
 
 	GetEventLogsByAddress(req GetEventLogsByAddressReq) (*LogResp, error)
 	GetEventLogsByTopics(req GetEventLogsByTopicsReq) (*LogResp, error)
@@ -23,6 +31,8 @@ type Client interface {
 
 	Debug() Client
 }
+
+var _ Client = (*client)(nil)
 
 // client is the concrete implementation of the Client interface
 type client struct {

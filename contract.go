@@ -1,6 +1,8 @@
 package etherscan
 
 import (
+	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -62,4 +64,121 @@ func (c *client) CheckVerifyStatus(req CheckVerifyStatusReq) (resp *StringResp, 
 	}
 	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
+}
+
+// ----------------------------	REQUEST	------------------------------------
+
+type GetContractABIReq struct {
+	ChainID uint64 `json:"chainid"`
+	Address string `json:"address"` // the string representing the address of the contract
+}
+
+type GetContractSourceCodeReq struct {
+	ChainID uint64 `json:"chainid"`
+	Address string `json:"address"` // the string representing the address of the contract
+}
+
+type GetContractCreatorTxInfoReq struct {
+	ChainID   uint64   `json:"chainid"`
+	Addresses []string `json:"contractaddresses"` // the array representing the addresses of the contract
+}
+
+type VerifySourceCodeReq struct {
+	ChainID              uint64  `json:"chainid"`
+	CodeFormat           string  `json:"codeformat"`            // single file, use solidity-single-file JSON file ( recommended ), use solidity-standard-json-input
+	SourceCode           string  `json:"sourceCode"`            // the Solidity source code
+	ContractAddress      string  `json:"contractaddress"`       // the address your contract is deployed at
+	ContractName         string  `json:"contractname"`          // the name of your contract, such as contracts/Verified.sol:Verified
+	CompilerVersion      string  `json:"compilerversion"`       // compiler version used, such as v0.8.24+commit.e11b9ed9
+	ConstructorArguments *string `json:"constructorArguements"` // optional, include if your contract uses constructor arguments
+	CompilerMode         *string `json:"compilermode"`          // for ZK Stack, set to solc/zksync
+	ZkSolcVersion        *string `json:"zksolcVersion"`         // for ZK Stack, zkSolc version used, such as v1.3.14
+}
+
+type CheckVerifyStatusReq struct {
+	ChainID uint64 `json:"chainid"`
+	GUID    string `json:"guid"` // the guid returned from the verify API
+}
+
+// ----------------------------	RESPONSE------------------------------------
+
+type ContractSourcecodeResp BaseResp
+
+func (r *ContractSourcecodeResp) GetData() ([]ContractSourceCode, error) {
+	noData, err := (*BaseResp)(r).Parse()
+	if err != nil {
+		return nil, err
+	}
+	if noData {
+		return nil, nil
+	}
+
+	var codes []ContractSourceCode
+	err = json.Unmarshal(r.Result, &codes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse result: %v", err)
+	}
+	return codes, nil
+}
+
+type ContractCreatorTxInfoResp BaseResp
+
+func (r *ContractCreatorTxInfoResp) GetData() ([]ContractCreatorTxInfo, error) {
+	noData, err := (*BaseResp)(r).Parse()
+	if err != nil {
+		return nil, err
+	}
+	if noData {
+		return nil, nil
+	}
+
+	var infos []ContractCreatorTxInfo
+	err = json.Unmarshal(r.Result, &infos)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse result: %v", err)
+	}
+	return infos, nil
+}
+
+type ContractSourceCode struct {
+	SourceCode           string `json:"SourceCode"`
+	ABI                  string `json:"ABI"`
+	ContractName         string `json:"ContractName"`
+	CompilerVersion      string `json:"CompilerVersion"`
+	CompilerType         string `json:"CompilerType"`
+	OptimizationUsed     string `json:"OptimizationUsed"`
+	Runs                 string `json:"Runs"`
+	ConstructorArguments string `json:"ConstructorArguments"`
+	EVMVersion           string `json:"EVMVersion"`
+	Library              string `json:"Library"`
+	ContractFileName     string `json:"ContractFileName"`
+	LicenseType          string `json:"LicenseType"`
+	Proxy                string `json:"Proxy"`
+	Implementation       string `json:"Implementation"`
+	SwarmSource          string `json:"SwarmSource"`
+	SimilarMatch         string `json:"SimilarMatch"`
+}
+
+type ContractCreatorTxInfo struct {
+	ContractAddress  string `json:"contractAddress"`
+	ContractCreator  string `json:"contractCreator"`
+	TxHash           string `json:"txHash"`
+	BlockNumber      string `json:"blockNumber"`
+	Timestamp        string `json:"timeStamp"`
+	ContractFactory  string `json:"contractFactory"`
+	CreationBytecode string `json:"creationBytecode"`
+}
+
+type VerifySourceCodeResp StringResp
+
+func (r *VerifySourceCodeResp) GetData() (string, error) {
+	result, err := (*StringResp)(r).Parse()
+	if err != nil {
+		return "", err
+	}
+
+	if result == ContractCodeAlreadyVerified {
+		return "", nil
+	}
+	return "", fmt.Errorf("unexpected result: %s", result)
 }

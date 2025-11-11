@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 func StructToMap(obj any) map[string]string {
@@ -41,19 +42,73 @@ func StructToMap(obj any) map[string]string {
 			val = value.Interface()
 		}
 
-		if val == nil {
+		if val == nil { // keep existing skip for nil pointers/interfaces
 			continue
 		}
 
-		// 使用 json tag 作为 key，如果没有就用字段名
-		key := field.Tag.Get("json")
-		if key == "" || key == "-" {
+		// Parse json tag: name[,option1,option2,...]
+		rawTag := field.Tag.Get("json")
+		if rawTag == "-" { // explicit ignore
+			continue
+		}
+		var key string
+		omitEmpty := false
+		if rawTag != "" {
+			parts := strings.Split(rawTag, ",")
+			namePart := parts[0]
+			if namePart == "-" { // already handled, but double-check
+				continue
+			}
+			if namePart != "" {
+				key = namePart
+			}
+			for _, opt := range parts[1:] {
+				if opt == "omitempty" {
+					omitEmpty = true
+				}
+			}
+		}
+		if key == "" { // fallback to field name
 			key = field.Name
 		}
+
+		if omitEmpty && isEmpty(val) {
+			continue
+		}
+
 		out[key], _ = ToStringE(val)
 	}
 
 	return out
+}
+
+// isEmpty determines whether a value is the zero value according to encoding/json's omitempty rules.
+func isEmpty(v any) bool {
+	if v == nil {
+		return true
+	}
+	rv := reflect.ValueOf(v)
+	switch rv.Kind() {
+	case reflect.String:
+		return rv.Len() == 0
+	case reflect.Bool:
+		return !rv.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return rv.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return rv.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return rv.Float() == 0
+	case reflect.Array, reflect.Slice, reflect.Map:
+		return rv.Len() == 0
+	case reflect.Interface, reflect.Pointer, reflect.Chan, reflect.Func:
+		return rv.IsNil()
+	case reflect.Struct:
+		// Compare with zero value of the struct
+		zero := reflect.Zero(rv.Type()).Interface()
+		return reflect.DeepEqual(v, zero)
+	}
+	return false
 }
 
 // ToStringE casts any value to a string type.
@@ -107,6 +162,16 @@ func ToStringE(i any) (string, error) {
 		return s.String(), nil
 	case error:
 		return s.Error(), nil
+	}
+	// Fallback: for slices, arrays, maps, structs, pointers -> JSON marshal.
+	rv := reflect.ValueOf(i)
+	kind := rv.Kind()
+	if kind == reflect.Slice || kind == reflect.Array || kind == reflect.Map || kind == reflect.Struct || kind == reflect.Pointer {
+		b, err := json.Marshal(i)
+		if err == nil {
+			return string(b), nil
+		}
+		return "", err
 	}
 	return "", errors.New("unsupported type for ToStringE: " + reflect.TypeOf(i).String())
 }

@@ -1,5 +1,10 @@
 package etherscan
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 var logModuleParams = map[string]string{
 	"module": "logs",
 	"action": "getLogs",
@@ -43,4 +48,41 @@ func (c *client) GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFi
 	}
 	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
+}
+
+// ----------------------------	REQUEST	------------------------------------
+
+// ----------------------------	RESPONSE ------------------------------------
+
+type LogResp BaseResp
+
+// GetData 获取日志数据，如果result是错误信息则返回错误
+func (r *LogResp) GetData() ([]Log, error) {
+	noData, err := (*BaseResp)(r).Parse()
+	if err != nil {
+		return nil, err
+	}
+	if noData {
+		return []Log{}, nil
+	}
+
+	var logs []Log
+	if err = json.Unmarshal(r.Result, &logs); err != nil {
+		return nil, fmt.Errorf("failed to parse result: %v", err)
+	}
+	return logs, nil
+}
+
+type Log struct {
+	Address          string   `json:"address"`
+	Topics           []string `json:"topics"`
+	Data             string   `json:"data"`
+	BlockNumber      string   `json:"blockNumber"`
+	BlockHash        string   `json:"blockHash"`
+	TimeStamp        string   `json:"timeStamp"`
+	GasPrice         string   `json:"gasPrice"`
+	GasUsed          string   `json:"gasUsed"`
+	LogIndex         string   `json:"logIndex"`
+	TransactionHash  string   `json:"transactionHash"`
+	TransactionIndex string   `json:"transactionIndex"`
 }
