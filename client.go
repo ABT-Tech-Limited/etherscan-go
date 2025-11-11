@@ -13,7 +13,8 @@ import (
 type Client interface {
 	// Account module
 
-	GetNormalTransactions(req GetNormalTransactionsReq) (*TransactionListResp, error)
+	GetNormalTransactionsByAddress(req GetNormalTransactionsByAddressReq) (*TransactionListResp, error)
+	GetERC20TokenTransferByAddress(req GetERC20TokenTransferEventsReq) (*TokenTransferList, error)
 
 	// Contracts module
 
