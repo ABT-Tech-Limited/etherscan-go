@@ -24,6 +24,10 @@ type Client interface {
 	VerifySourceCode(req VerifySourceCodeReq) (resp *VerifySourceCodeResp, err error)
 	CheckVerifyStatus(req CheckVerifyStatusReq) (resp *StringResp, err error)
 
+	// Gas Tracker module
+
+	GetGasOracle(chainID uint64) (*GasOracleResp, error)
+
 	// Logs module
 
 	GetEventLogsByAddress(req GetEventLogsByAddressReq) (*LogResp, error)

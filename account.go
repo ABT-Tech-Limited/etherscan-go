@@ -9,6 +9,7 @@ var accountModuleParams = map[string]string{
 	"module": "account",
 }
 
+// GetNormalTransactionsByAddress Retrieves the transaction history of a specified address, with optional pagination.
 func (c *client) GetNormalTransactionsByAddress(req GetNormalTransactionsByAddressReq) (resp *TransactionListResp, err error) {
 	params := CopyMap(accountModuleParams)
 	params["action"] = "txlist"
@@ -19,6 +20,7 @@ func (c *client) GetNormalTransactionsByAddress(req GetNormalTransactionsByAddre
 	return
 }
 
+// GetERC20TokenTransferByAddress Retrieves the list of ERC-20 token transfers made by a specified address, with optional filtering by token contract.
 func (c *client) GetERC20TokenTransferByAddress(req GetERC20TokenTransferEventsReq) (resp *TokenTransferList, err error) {
 	params := CopyMap(accountModuleParams)
 	params["action"] = "tokentx"
