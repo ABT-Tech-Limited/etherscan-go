@@ -1,13 +1,14 @@
 package etherscan
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestClient_GetContractABI(t *testing.T) {
-	rsp, err := api.GetContractABI(GetContractABIReq{
+	rsp, err := api.GetContractABI(context.Background(), GetContractABIReq{
 		ChainID: chainIDETH,
 		Address: "0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413",
 	})
@@ -17,7 +18,7 @@ func TestClient_GetContractABI(t *testing.T) {
 }
 
 func TestClient_GetContractSourceCode(t *testing.T) {
-	rsp, err := api.GetContractSourceCode(GetContractSourceCodeReq{
+	rsp, err := api.GetContractSourceCode(context.Background(), GetContractSourceCodeReq{
 		ChainID: chainIDETH,
 		Address: "0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413",
 	})
@@ -29,7 +30,7 @@ func TestClient_GetContractSourceCode(t *testing.T) {
 }
 
 func TestClient_GetContractCreatorTxInfo(t *testing.T) {
-	rsp, err := api.GetContractCreatorTxInfo(GetContractCreatorTxInfoReq{
+	rsp, err := api.GetContractCreatorTxInfo(context.Background(), GetContractCreatorTxInfoReq{
 		ChainID: chainIDETH,
 		Addresses: []string{
 			"0xbb9bc244d798123fde783fcc1c72d3bb8c189413",
@@ -46,7 +47,7 @@ func TestClient_GetContractCreatorTxInfo(t *testing.T) {
 }
 
 func TestClient_VerifySourceCode(t *testing.T) {
-	rsp, err := api.VerifySourceCode(VerifySourceCodeReq{
+	rsp, err := api.VerifySourceCode(context.Background(), VerifySourceCodeReq{
 		ChainID:              chainIDETH,
 		CodeFormat:           "",
 		SourceCode:           "",
@@ -62,7 +63,7 @@ func TestClient_VerifySourceCode(t *testing.T) {
 }
 
 func TestClient_CheckVerifyStatus(t *testing.T) {
-	rsp, err := api.CheckVerifyStatus(CheckVerifyStatusReq{
+	rsp, err := api.CheckVerifyStatus(context.Background(), CheckVerifyStatusReq{
 		ChainID: chainIDETH,
 		GUID:    "x3ryqcqr1zdknhfhkimqmizlcqpxncqc6nrvp3pgrcpfsqedqi",
 	})

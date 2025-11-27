@@ -1,6 +1,7 @@
 package etherscan
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,7 +13,7 @@ import (
 func TestClient_GetEventLogsByAddress(t *testing.T) {
 	page := 1
 	offset := 0
-	rsp, err := api.GetEventLogsByAddress(GetEventLogsByAddressReq{
+	rsp, err := api.GetEventLogsByAddress(context.Background(), GetEventLogsByAddressReq{
 		ChainID:   chainIdARB,
 		Address:   "0x56785734c9DC26BBc6B8AA9a615Fa19eFb0b677b",
 		FromBlock: 356174872,
@@ -31,7 +32,7 @@ func TestClient_GetEventLogsByAddress(t *testing.T) {
 func TestClient_GetEventLogsByTopics(t *testing.T) {
 	page := 1
 	offset := 0
-	rsp, err := api.GetEventLogsByTopics(GetEventLogsByTopicsReq{
+	rsp, err := api.GetEventLogsByTopics(context.Background(), GetEventLogsByTopicsReq{
 		ChainID:   chainIdARB,
 		FromBlock: 356174872,
 		ToBlock:   356174872,
@@ -52,7 +53,7 @@ func TestClient_GetEventLogsByTopics(t *testing.T) {
 func TestClient_GetEventLogsByAddressFilterByTopics(t *testing.T) {
 	page := 1
 	offset := 0
-	rsp, err := api.GetEventLogsByAddressFilterByTopics(GetEventLogsByAddressFilterByTopicsReq{
+	rsp, err := api.GetEventLogsByAddressFilterByTopics(context.Background(), GetEventLogsByAddressFilterByTopicsReq{
 		ChainID:   chainIdARB,
 		Address:   "0x56785734c9DC26BBc6B8AA9a615Fa19eFb0b677b",
 		FromBlock: 356174872,

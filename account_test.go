@@ -1,13 +1,14 @@
 package etherscan
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestClient_GetNormalTransactions(t *testing.T) {
-	rsp, err := api.GetNormalTransactionsByAddress(GetNormalTransactionsByAddressReq{
+	rsp, err := api.GetNormalTransactionsByAddress(context.Background(), GetNormalTransactionsByAddressReq{
 		ChainID: chainIDSepolia,
 		Address: "0xdb6b74204C641F8A4e10fe1A4A003386f6534447",
 		Page:    1,
@@ -22,7 +23,7 @@ func TestClient_GetNormalTransactions(t *testing.T) {
 }
 
 func TestClient_GetERC20TokenTransferEvents(t *testing.T) {
-	rsp, err := api.GetERC20TokenTransferByAddress(GetERC20TokenTransferEventsReq{
+	rsp, err := api.GetERC20TokenTransferByAddress(context.Background(), GetERC20TokenTransferEventsReq{
 		ChainID:         chainIDSepolia,
 		ContractAddress: "0xdb6b74204C641F8A4e10fe1A4A003386f6534447",
 		Page:            1,

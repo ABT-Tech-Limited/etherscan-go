@@ -1,6 +1,7 @@
 package etherscan
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
@@ -10,12 +11,12 @@ var gasTrackerModuleParams = map[string]string{
 }
 
 // GetGasOracle Get current gas price recommendations.
-func (c *client) GetGasOracle(chainID uint64) (resp *GasOracleResp, err error) {
+func (c *client) GetGasOracle(ctx context.Context, chainID uint64) (resp *GasOracleResp, err error) {
 	params := CopyMap(gasTrackerModuleParams)
 	params["action"] = "gasoracle"
 	params["chainId"] = fmt.Sprintf("%d", chainID)
 
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
 }
 

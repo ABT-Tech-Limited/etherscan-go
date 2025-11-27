@@ -1,6 +1,7 @@
 package etherscan
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
@@ -11,17 +12,17 @@ var logModuleParams = map[string]string{
 }
 
 // GetEventLogsByAddress Returns the event logs from an address, with optional filtering by block range.
-func (c *client) GetEventLogsByAddress(req GetEventLogsByAddressReq) (resp *LogResp, err error) {
+func (c *client) GetEventLogsByAddress(ctx context.Context, req GetEventLogsByAddressReq) (resp *LogResp, err error) {
 	params := CopyMap(logModuleParams)
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
 }
 
 // GetEventLogsByTopics Returns the events log in a block range, filtered by topics.
-func (c *client) GetEventLogsByTopics(req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
+func (c *client) GetEventLogsByTopics(ctx context.Context, req GetEventLogsByTopicsReq) (resp *LogResp, err error) {
 	params := CopyMap(logModuleParams)
 	for k, v := range StructToMap(req) {
 		if k != "topics" {
@@ -31,12 +32,12 @@ func (c *client) GetEventLogsByTopics(req GetEventLogsByTopicsReq) (resp *LogRes
 	for k, v := range req.Topics {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
 }
 
 // GetEventLogsByAddressFilterByTopics Returns the event logs from an address, filtered by topics and block range.
-func (c *client) GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
+func (c *client) GetEventLogsByAddressFilterByTopics(ctx context.Context, req GetEventLogsByAddressFilterByTopicsReq) (resp *LogResp, err error) {
 	params := CopyMap(logModuleParams)
 	for k, v := range StructToMap(req) {
 		if k != "topics" {
@@ -46,7 +47,7 @@ func (c *client) GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFi
 	for k, v := range req.Topics {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
 }
 

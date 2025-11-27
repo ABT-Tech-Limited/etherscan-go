@@ -1,6 +1,7 @@
 package etherscan
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -13,26 +14,26 @@ import (
 type Client interface {
 	// Account module
 
-	GetNormalTransactionsByAddress(req GetNormalTransactionsByAddressReq) (*TransactionListResp, error)
-	GetERC20TokenTransferByAddress(req GetERC20TokenTransferEventsReq) (*TokenTransferList, error)
+	GetNormalTransactionsByAddress(ctx context.Context, req GetNormalTransactionsByAddressReq) (*TransactionListResp, error)
+	GetERC20TokenTransferByAddress(ctx context.Context, req GetERC20TokenTransferEventsReq) (*TokenTransferList, error)
 
 	// Contracts module
 
-	GetContractABI(req GetContractABIReq) (*StringResp, error)
-	GetContractSourceCode(req GetContractSourceCodeReq) (*ContractSourcecodeResp, error)
-	GetContractCreatorTxInfo(req GetContractCreatorTxInfoReq) (*ContractCreatorTxInfoResp, error)
-	VerifySourceCode(req VerifySourceCodeReq) (resp *VerifySourceCodeResp, err error)
-	CheckVerifyStatus(req CheckVerifyStatusReq) (resp *StringResp, err error)
+	GetContractABI(ctx context.Context, req GetContractABIReq) (*StringResp, error)
+	GetContractSourceCode(ctx context.Context, req GetContractSourceCodeReq) (*ContractSourcecodeResp, error)
+	GetContractCreatorTxInfo(ctx context.Context, req GetContractCreatorTxInfoReq) (*ContractCreatorTxInfoResp, error)
+	VerifySourceCode(ctx context.Context, req VerifySourceCodeReq) (resp *VerifySourceCodeResp, err error)
+	CheckVerifyStatus(ctx context.Context, req CheckVerifyStatusReq) (resp *StringResp, err error)
 
 	// Gas Tracker module
 
-	GetGasOracle(chainID uint64) (*GasOracleResp, error)
+	GetGasOracle(ctx context.Context, chainID uint64) (*GasOracleResp, error)
 
 	// Logs module
 
-	GetEventLogsByAddress(req GetEventLogsByAddressReq) (*LogResp, error)
-	GetEventLogsByTopics(req GetEventLogsByTopicsReq) (*LogResp, error)
-	GetEventLogsByAddressFilterByTopics(req GetEventLogsByAddressFilterByTopicsReq) (*LogResp, error)
+	GetEventLogsByAddress(ctx context.Context, req GetEventLogsByAddressReq) (*LogResp, error)
+	GetEventLogsByTopics(ctx context.Context, req GetEventLogsByTopicsReq) (*LogResp, error)
+	GetEventLogsByAddressFilterByTopics(ctx context.Context, req GetEventLogsByAddressFilterByTopicsReq) (*LogResp, error)
 
 	Debug() Client
 }

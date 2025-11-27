@@ -1,6 +1,7 @@
 package etherscan
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
@@ -10,24 +11,24 @@ var accountModuleParams = map[string]string{
 }
 
 // GetNormalTransactionsByAddress Retrieves the transaction history of a specified address, with optional pagination.
-func (c *client) GetNormalTransactionsByAddress(req GetNormalTransactionsByAddressReq) (resp *TransactionListResp, err error) {
+func (c *client) GetNormalTransactionsByAddress(ctx context.Context, req GetNormalTransactionsByAddressReq) (resp *TransactionListResp, err error) {
 	params := CopyMap(accountModuleParams)
 	params["action"] = "txlist"
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
 }
 
 // GetERC20TokenTransferByAddress Retrieves the list of ERC-20 token transfers made by a specified address, with optional filtering by token contract.
-func (c *client) GetERC20TokenTransferByAddress(req GetERC20TokenTransferEventsReq) (resp *TokenTransferList, err error) {
+func (c *client) GetERC20TokenTransferByAddress(ctx context.Context, req GetERC20TokenTransferEventsReq) (resp *TokenTransferList, err error) {
 	params := CopyMap(accountModuleParams)
 	params["action"] = "tokentx"
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
 	return
 }
 
