@@ -77,7 +77,7 @@ func (r *StringResp) Parse() (string, error) {
 		return "", nil
 	}
 	if r.Status == 0 {
-		return "", fmt.Errorf("status not ok: %s", r.Message)
+		return "", fmt.Errorf("status not ok: %s, result: %s", r.Message, r.Result)
 	}
 	return r.Result, nil
 }
