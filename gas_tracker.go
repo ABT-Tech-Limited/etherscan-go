@@ -16,7 +16,7 @@ func (c *client) GetGasOracle(ctx context.Context, chainID uint64) (resp *GasOra
 	params["action"] = "gasoracle"
 	params["chainId"] = fmt.Sprintf("%d", chainID)
 
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 

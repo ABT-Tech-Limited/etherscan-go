@@ -19,7 +19,7 @@ func (c *client) GetContractABI(ctx context.Context, req GetContractABIReq) (res
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 
@@ -30,7 +30,7 @@ func (c *client) GetContractSourceCode(ctx context.Context, req GetContractSourc
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 
 }
@@ -43,7 +43,7 @@ func (c *client) GetContractCreatorTxInfo(ctx context.Context, req GetContractCr
 		params[k] = v
 	}
 	params["contractaddresses"] = strings.Join(req.Addresses, ",")
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 
@@ -52,7 +52,7 @@ func (c *client) VerifySourceCode(ctx context.Context, req VerifySourceCodeReq) 
 	params := CopyMap(contractModuleParams)
 	params["action"] = "verifysourcecode"
 	params["chainid"] = strconv.FormatUint(req.ChainID, 10)
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetFormData(StructToMap(req)).SetError(&resp).SetResult(&resp).Post("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetFormData(StructToMap(req)).SetResultError(&resp).SetResult(&resp).Post("")
 	return
 }
 
@@ -63,7 +63,7 @@ func (c *client) CheckVerifyStatus(ctx context.Context, req CheckVerifyStatusReq
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 

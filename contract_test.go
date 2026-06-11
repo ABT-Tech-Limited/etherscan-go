@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestClient_GetContractABI(t *testing.T) {
@@ -25,7 +26,7 @@ func TestClient_GetContractSourceCode(t *testing.T) {
 	assert.Nil(t, err)
 	code, err := rsp.GetData()
 	assert.Nil(t, err)
-	assert.Len(t, code, 1)
+	require.Len(t, code, 1)
 	assert.Equal(t, "DAO", code[0].ContractName)
 }
 

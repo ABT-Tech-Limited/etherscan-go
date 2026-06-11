@@ -17,7 +17,7 @@ func (c *client) GetNormalTransactionsByAddress(ctx context.Context, req GetNorm
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 
@@ -28,7 +28,7 @@ func (c *client) GetERC20TokenTransferByAddress(ctx context.Context, req GetERC2
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 

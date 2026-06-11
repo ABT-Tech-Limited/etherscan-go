@@ -17,7 +17,7 @@ func (c *client) GetEventLogsByAddress(ctx context.Context, req GetEventLogsByAd
 	for k, v := range StructToMap(req) {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 
@@ -32,7 +32,7 @@ func (c *client) GetEventLogsByTopics(ctx context.Context, req GetEventLogsByTop
 	for k, v := range req.Topics {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 
@@ -47,7 +47,7 @@ func (c *client) GetEventLogsByAddressFilterByTopics(ctx context.Context, req Ge
 	for k, v := range req.Topics {
 		params[k] = v
 	}
-	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetError(&resp).SetResult(&resp).Get("")
+	_, err = c.resty.R().SetContext(ctx).SetQueryParams(params).SetResultError(&resp).SetResult(&resp).Get("")
 	return
 }
 

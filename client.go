@@ -102,7 +102,9 @@ func (c *client) Debug() Client {
 }
 
 func FreeRateLimiter() func(client *resty.Client, req *resty.Request) error {
-	limiter := rate.NewLimiter(5, 1)
+	// Etherscan free tier allows 3 req/s; space requests at 400ms so network
+	// jitter cannot squeeze 4 arrivals into the server's 1s sliding window.
+	limiter := rate.NewLimiter(rate.Every(400*time.Millisecond), 1)
 	return func(client *resty.Client, req *resty.Request) error {
 		if err := limiter.Wait(req.Context()); err != nil {
 			return fmt.Errorf("free rate limit exceeded: %w", err)
